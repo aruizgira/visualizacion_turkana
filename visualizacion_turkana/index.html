@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Turkana Geoarchaeological Visualization</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div>
+      <p class="eyebrow">CAMP · Loreamatet, Turkana</p>
+      <h1>Reading pastoral activity through soil chemistry</h1>
+      <p class="lead">Interactive exploration of interpolated pXRF surfaces and settlement structures.</p>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel">
+      <section>
+        <h2>Explore</h2>
+        <label for="siteSelect">Site</label>
+        <select id="siteSelect"></select>
+
+        <label for="areaSelect">Area</label>
+        <select id="areaSelect"></select>
+
+        <label for="elementSelect">Element</label>
+        <select id="elementSelect"></select>
+      </section>
+
+      <section class="toggles">
+        <label><input type="checkbox" id="structuresToggle" checked /> Show structures</label>
+        <label><input type="checkbox" id="photoToggle" checked /> Show field photo</label>
+      </section>
+
+      <section class="legend-card">
+        <h3 id="legendTitle">Legend</h3>
+        <div class="legend-gradient"></div>
+        <div class="legend-values"><span id="legendMin">–</span><span id="legendMax">–</span></div>
+        <p class="note">Raster values are read from the GeoTIFF. The colour ramp is generated in the browser.</p>
+      </section>
+
+      <section>
+        <h3>Interpretive focus</h3>
+        <p id="interpretation">Select an element to compare chemical patterning between the corral and domestic area.</p>
+      </section>
+    </aside>
+
+    <section class="viewer-card">
+      <div class="viewer-header">
+        <div>
+          <h2 id="mapTitle">Loading…</h2>
+          <p id="mapSubtitle">GeoTIFF raster + GeoJSON structures</p>
+        </div>
+        <button id="resetButton">Reset view</button>
+      </div>
+      <div class="canvas-wrap">
+        <canvas id="mapCanvas" width="1200" height="820"></canvas>
+        <div id="loading" class="loading">Loading raster…</div>
+      </div>
+    </section>
+
+    <section class="media-card" id="photoCard">
+      <h2>Field context</h2>
+      <img id="sitePhoto" alt="Field photograph for selected area" />
+    </section>
+  </main>
+
+  <footer>
+    <p>Prototype for the UOC Data Visualization project. Built from GeoTIFF rasters and GeoJSON settlement plans.</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/geotiff@2.1.3/dist-browser/geotiff.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>

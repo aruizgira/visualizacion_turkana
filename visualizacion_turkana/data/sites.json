@@ -1,0 +1,56 @@
+{
+  "sites": [
+    {
+      "id": "E1",
+      "name": "Kenya E1",
+      "areas": [
+        {
+          "id": "area_1_corral",
+          "label": "Corral",
+          "rasters": {
+            "P": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_P.tif",
+            "Ca": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Ca.tif",
+            "Ti": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Ti.tif",
+            "Mn": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Mn.tif",
+            "Fe": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Fe.tif",
+            "Zn": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Zn.tif",
+            "Rb": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Rb.tif",
+            "Sr": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Sr.tif",
+            "Y": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Y.tif",
+            "Zr": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Zr.tif",
+            "Ba": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Ba.tif",
+            "Mg": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Mg.tif",
+            "Al": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Al.tif",
+            "Si": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_Si.tif",
+            "K": "assets/E1/area_1_corral/rasters/Kenya_E1_area_1_K.tif"
+          },
+          "structures": "assets/E1/area_1_corral/vectors/Kenya_E1_area_1_structures.geojson",
+          "photo": "assets/E1/area_1_corral/photos/Kenya_E1_area_1.jpeg"
+        },
+        {
+          "id": "area_2_domestic",
+          "label": "Domestic area",
+          "rasters": {
+            "P": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_P.tif",
+            "Ca": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Ca.tif",
+            "Ti": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Ti.tif",
+            "Mn": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Mn.tif",
+            "Fe": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Fe.tif",
+            "Zn": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Zn.tif",
+            "Rb": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Rb.tif",
+            "Sr": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Sr.tif",
+            "Y": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Y.tif",
+            "Zr": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Zr.tif",
+            "Ba": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Ba.tif",
+            "Mg": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Mg.tif",
+            "Al": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Al.tif",
+            "Si": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_Si.tif",
+            "K": "assets/E1/area_2_domestic/rasters/Kenya_E1_area_2_K.tif"
+          },
+          "structures": "assets/E1/area_2_domestic/vectors/Kenya_E1_area_2_structures.geojson",
+          "photo": "assets/E1/area_2_domestic/photos/Kenya_E1_area_2.jpeg"
+        }
+      ]
+    }
+  ]
+}
