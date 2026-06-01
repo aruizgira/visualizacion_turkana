@@ -48,14 +48,15 @@ async function fetchJson(url) {
 
 function formatNumber(v) {
   if (!Number.isFinite(v)) return '–';
-  const abs = Math.abs(v);
-  if (abs >= 10) return v.toFixed(1) + ' %';
-  if (abs >= 1) return v.toFixed(2) + ' %';
-  if (abs >= 0.1) return v.toFixed(3) + ' %';
-  if (abs >= 0.01) return v.toFixed(4) + ' %';
-  if (abs >= 0.001) return v.toFixed(5) + ' %';
+  const pct = v * 100;
+  const abs = Math.abs(pct);
+  if (abs >= 10) return pct.toFixed(1) + ' %';
+  if (abs >= 1) return pct.toFixed(2) + ' %';
+  if (abs >= 0.1) return pct.toFixed(3) + ' %';
+  if (abs >= 0.01) return pct.toFixed(4) + ' %';
+  if (abs >= 0.001) return pct.toFixed(5) + ' %';
 
-  return v.toExponential(2) + ' %';
+  return pct.toExponential(2) + ' %';
 }
 
 function colorRamp(t) {
