@@ -42,8 +42,14 @@ function setLoading(show, message = 'Loading raster…') {
 
 function formatNumber(v) {
   if (!Number.isFinite(v)) return '–';
-  if (Math.abs(v) >= 1) return v.toFixed(3);
-  return v.toExponential(2);
+  const abs = Math.abs(v);
+  if (abs >= 10) return v.toFixed(1) + ' %';
+  if (abs >= 1) return v.toFixed(2) + ' %';
+  if (abs >= 0.1) return v.toFixed(3) + ' %';
+  if (abs >= 0.01) return v.toFixed(4) + ' %';
+  if (abs >= 0.001) return v.toFixed(5) + ' %';
+
+  return v.toExponential(2) + ' %';
 }
 
 function colorRamp(t) {
@@ -232,7 +238,7 @@ async function render() {
 
     el.mapTitle.textContent = `${state.site.name} · ${state.area.label} · ${state.element}`;
     el.mapSubtitle.textContent = `${width} × ${height} raster cells · EPSG:32637`;
-    el.legendTitle.textContent = `${state.element} concentration`;
+    el.legendTitle.textContent = `${state.element} concentration (%)`;
     el.interpretation.textContent = elementNotes[state.element] || 'Use this element to explore spatial patterning in the selected area.';
 
     if (state.area.photo) {
