@@ -40,6 +40,12 @@ function setLoading(show, message = 'Loading raster…') {
   el.loading.classList.toggle('hidden', !show);
 }
 
+async function fetchJson(url) {
+  const response = await fetch(url, { cache: 'no-store' });
+  if (!response.ok) throw new Error(`Could not load ${url}: ${response.status}`);
+  return response.json();
+}
+
 function formatNumber(v) {
   if (!Number.isFinite(v)) return '–';
   const abs = Math.abs(v);
@@ -217,6 +223,8 @@ async function render() {
 
   try {
     const rasterPath = state.area.rasters[state.element];
+    el.mapTitle.textContent = `${state.site.name} · ${state.area.label} · ${state.element}`;
+    el.mapSubtitle.textContent = `Loading ${rasterPath}`;
     const tiff = await GeoTIFF.fromUrl(rasterPath);
     const image = await tiff.getImage();
     const width = image.getWidth();
@@ -226,7 +234,7 @@ async function render() {
 
     let structures = null, structuresBBox = null;
     if (state.area.structures) {
-      structures = await fetch(state.area.structures).then(r => r.json());
+      structures = await fetchJson(state.area.structures);
       structuresBBox = getGeometryBBox(structures);
     }
     const viewBBox = padBBox(unionBBox(bbox, structuresBBox));
@@ -251,7 +259,9 @@ async function render() {
     console.error(err);
     ctx.fillStyle = '#7b1d1d';
     ctx.font = '20px system-ui';
-    ctx.fillText('Could not load this layer. Check file paths and browser console.', 40, 80);
+    ctx.fillText('Could not load this layer.', 40, 80);
+    ctx.font = '15px system-ui';
+    ctx.fillText(err.message || 'Check file paths and browser console.', 40, 110);
   } finally {
     setLoading(false);
   }
@@ -298,8 +308,7 @@ function populateSelectors() {
   populateAreas();
 }
 
-fetch('data/sites.json')
-  .then(r => r.json())
+fetchJson(`data/sites.json?v=${Date.now()}`)
   .then(config => {
     state.sites = config.sites;
     populateSelectors();
