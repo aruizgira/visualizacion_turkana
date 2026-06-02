@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Interactive visualization of pXRF soil chemistry, GeoTIFF rasters, and settlement structures from Turkana geoarchaeological field data." />
   <title>Turkana Geoarchaeological Visualization</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -16,80 +17,206 @@
     </div>
   </header>
 
-  <main class="layout">
-    <aside class="panel" aria-label="Visualization controls">
-      <section class="control-group" aria-labelledby="exploreHeading">
-        <h2 id="exploreHeading">Explore</h2>
+  <nav class="tabs" aria-label="Main views">
+    <button type="button" class="tab-button active" data-tab="overview">Overview</button>
+    <button type="button" class="tab-button" data-tab="explore">Explore</button>
+    <button type="button" class="tab-button" data-tab="compare">Compare</button>
+  </nav>
 
-        <div class="field">
-          <label for="siteSelect">Site</label>
-          <select id="siteSelect" name="site"></select>
+  <main>
+    <section id="overviewView" class="tab-view active" aria-labelledby="overviewHeading">
+      <div class="overview-shell">
+        <div class="section-header">
+          <div>
+            <h2 id="overviewHeading">Overview</h2>
+            <p>Satellite overview of studied sites.</p>
+          </div>
         </div>
-
-        <div class="field">
-          <label for="areaSelect">Area</label>
-          <select id="areaSelect" name="area"></select>
-        </div>
-
-        <div class="field">
-          <label for="elementSelect">Element</label>
-          <select id="elementSelect" name="element"></select>
-        </div>
-      </section>
-
-      <section class="toggles" aria-label="Layer visibility">
-        <label for="structuresToggle">
-          <input type="checkbox" id="structuresToggle" checked />
-          Show structures
-        </label>
-        <label for="photoToggle">
-          <input type="checkbox" id="photoToggle" checked />
-          Show field photo
-        </label>
-      </section>
-
-      <section class="legend-card" aria-labelledby="legendTitle">
-        <h3 id="legendTitle">Legend</h3>
-        <div class="legend-gradient" aria-hidden="true"></div>
-        <div class="legend-values">
-          <span id="legendMin">-</span>
-          <span id="legendMax">-</span>
-        </div>
-        <p class="note">Raster values are read from the GeoTIFF. The colour ramp is generated in the browser.</p>
-      </section>
-
-      <section aria-labelledby="interpretiveFocusHeading">
-        <h3 id="interpretiveFocusHeading">Interpretive focus</h3>
-        <p id="interpretation">Select an element to compare chemical patterning between the corral and domestic area.</p>
-      </section>
-    </aside>
-
-    <section class="viewer-card" aria-labelledby="mapTitle">
-      <div class="viewer-header">
-        <div>
-          <h2 id="mapTitle">Loading...</h2>
-          <p id="mapSubtitle">GeoTIFF raster + GeoJSON structures</p>
-        </div>
-        <button type="button" id="resetButton">Reset view</button>
-      </div>
-
-      <div class="canvas-wrap">
-        <canvas id="mapCanvas" width="1200" height="820"></canvas>
-        <div id="loading" class="loading" role="status" aria-live="polite">Loading raster...</div>
+        <div id="overviewMap" class="overview-map" aria-label="Satellite map of site locations"></div>
+        <p id="overviewStatus" class="status-note" hidden></p>
       </div>
     </section>
 
-    <section class="media-card" id="photoCard" aria-labelledby="fieldContextHeading">
-      <h2 id="fieldContextHeading">Field context</h2>
-      <img id="sitePhoto" alt="Field photograph for selected area" />
+    <section id="exploreView" class="tab-view" aria-labelledby="exploreHeading" hidden>
+      <div class="layout">
+        <aside class="panel" aria-label="Visualization controls">
+          <section class="control-group" aria-labelledby="exploreHeading">
+            <h2 id="exploreHeading">Explore</h2>
+
+            <div class="field">
+              <label for="siteSelect">Site</label>
+              <select id="siteSelect" name="site"></select>
+            </div>
+
+            <div class="field">
+              <label for="areaSelect">Area</label>
+              <select id="areaSelect" name="area"></select>
+            </div>
+
+            <div class="field">
+              <label for="elementSelect">Element</label>
+              <select id="elementSelect" name="element"></select>
+            </div>
+          </section>
+
+          <section class="toggles" aria-label="Layer visibility">
+            <input type="checkbox" id="structuresToggle" checked hidden />
+            <label for="photoToggle">
+              <input type="checkbox" id="photoToggle" checked />
+              Show context
+            </label>
+          </section>
+
+          <section class="legend-card" aria-labelledby="legendTitle">
+            <h3 id="legendTitle">Legend</h3>
+            <div class="legend-gradient" aria-hidden="true"></div>
+            <div class="legend-values">
+              <span id="legendMin">-</span>
+              <span id="legendMax">-</span>
+            </div>
+          </section>
+
+          <section aria-labelledby="interpretiveFocusHeading">
+            <h3 id="interpretiveFocusHeading">Interpretive focus</h3>
+            <p id="interpretation">Select an element to compare chemical patterning between the corral and domestic area.</p>
+          </section>
+        </aside>
+
+        <div class="explore-main">
+          <section class="site-card" id="photoCard" aria-labelledby="siteInfoHeading">
+            <div class="site-info">
+              <div>
+                <p class="eyebrow small">Selected context</p>
+                <h2 id="siteInfoHeading">Site context</h2>
+                <p id="siteInfoMeta"></p>
+              </div>
+              <p id="siteLocationText" class="coordinate-note"></p>
+            </div>
+            <div class="site-media">
+              <img id="sitePhoto" alt="Field photograph for selected area" />
+              <div id="miniSiteMap" class="mini-map" aria-label="Satellite location map for selected site"></div>
+            </div>
+          </section>
+
+          <section class="viewer-card" aria-labelledby="mapTitle">
+            <div class="viewer-header">
+              <div>
+                <h2 id="mapTitle">Loading...</h2>
+                <p id="mapSubtitle">GeoTIFF raster + GeoJSON structures</p>
+              </div>
+              <button type="button" id="resetButton">Reset view</button>
+            </div>
+
+            <div class="canvas-wrap">
+              <canvas id="mapCanvas" width="1200" height="820"></canvas>
+              <div id="loading" class="loading" role="status" aria-live="polite">Loading raster...</div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </section>
+
+    <section id="compareView" class="tab-view" aria-labelledby="compareHeading" hidden>
+      <div class="compare-shell">
+        <div class="section-header">
+          <div>
+            <h2 id="compareHeading">Compare</h2>
+          </div>
+        </div>
+
+        <div class="compare-grid">
+          <section class="compare-panel" aria-labelledby="compareATitle">
+            <div class="compare-controls">
+              <div class="field">
+                <label for="compareASite">Site</label>
+                <select id="compareASite"></select>
+              </div>
+              <div class="field">
+                <label for="compareAArea">Area</label>
+                <select id="compareAArea"></select>
+              </div>
+              <div class="field">
+                <label for="compareAElement">Element</label>
+                <select id="compareAElement"></select>
+              </div>
+              <label class="inline-toggle" for="compareAStructures">
+                <input type="checkbox" id="compareAStructures" checked />
+                Show structures
+              </label>
+            </div>
+
+            <div class="viewer-header compact">
+              <div>
+                <h3 id="compareATitle">Panel A</h3>
+                <p id="compareASubtitle">GeoTIFF raster + GeoJSON structures</p>
+              </div>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="compareACanvas" width="900" height="680"></canvas>
+              <div id="compareALoading" class="loading" role="status" aria-live="polite">Loading raster...</div>
+            </div>
+            <div class="legend-card compact" aria-labelledby="compareALegendTitle">
+              <h3 id="compareALegendTitle">Legend</h3>
+              <div class="legend-gradient" aria-hidden="true"></div>
+              <div class="legend-values">
+                <span id="compareALegendMin">-</span>
+                <span id="compareALegendMax">-</span>
+              </div>
+            </div>
+          </section>
+
+          <section class="compare-panel" aria-labelledby="compareBTitle">
+            <div class="compare-controls">
+              <div class="field">
+                <label for="compareBSite">Site</label>
+                <select id="compareBSite"></select>
+              </div>
+              <div class="field">
+                <label for="compareBArea">Area</label>
+                <select id="compareBArea"></select>
+              </div>
+              <div class="field">
+                <label for="compareBElement">Element</label>
+                <select id="compareBElement"></select>
+              </div>
+              <label class="inline-toggle" for="compareBStructures">
+                <input type="checkbox" id="compareBStructures" checked />
+                Show structures
+              </label>
+            </div>
+
+            <div class="viewer-header compact">
+              <div>
+                <h3 id="compareBTitle">Panel B</h3>
+                <p id="compareBSubtitle">GeoTIFF raster + GeoJSON structures</p>
+              </div>
+            </div>
+            <div class="canvas-wrap">
+              <canvas id="compareBCanvas" width="900" height="680"></canvas>
+              <div id="compareBLoading" class="loading" role="status" aria-live="polite">Loading raster...</div>
+            </div>
+            <div class="legend-card compact" aria-labelledby="compareBLegendTitle">
+              <h3 id="compareBLegendTitle">Legend</h3>
+              <div class="legend-gradient" aria-hidden="true"></div>
+              <div class="legend-values">
+                <span id="compareBLegendMin">-</span>
+                <span id="compareBLegendMax">-</span>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
     </section>
   </main>
 
-  <footer>
-    <p>Prototype for the UOC Data Visualization project. Built from GeoTIFF rasters and GeoJSON settlement plans.</p>
-  </footer>
+  <div id="photoModal" class="photo-modal" hidden>
+    <button type="button" id="photoModalClose" class="photo-modal-close" aria-label="Close enlarged photo">Close</button>
+    <img id="photoModalImage" alt="" />
+  </div>
 
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/geotiff@2.1.3/dist-browser/geotiff.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/proj4@2.12.1/dist/proj4.js" defer></script>
   <script src="script.js" defer></script>
 </body>
 </html>
