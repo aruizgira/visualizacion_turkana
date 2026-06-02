@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Interactive visualization of pXRF soil chemistry, GeoTIFF rasters, and settlement structures from Turkana geoarchaeological field data." />
+  <meta name="description" content="Interactive visualization of soil chemistry, GeoTIFF rasters, and settlement structures from Turkana geoarchaeological field data." />
   <title>Turkana Geoarchaeological Visualization</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" />
   <link rel="stylesheet" href="style.css" />
@@ -13,7 +13,7 @@
     <div class="hero-content">
       <p class="eyebrow">CAMP - Loreamatet, Turkana</p>
       <h1>Reading pastoral activity through soil chemistry</h1>
-      <p class="lead">Interactive exploration of interpolated pXRF surfaces and settlement structures.</p>
+      <p class="lead">Interactive exploration of interpolated chemical surfaces and settlement structures.</p>
     </div>
   </header>
 
@@ -59,16 +59,23 @@
         </section>
 
         <section class="home-section challenge-card" aria-labelledby="challengeHeading">
-          <h2 id="challengeHeading">The challenge</h2>
-          <p>How can archaeologists identify and interpret settlements that often leave only ephemeral traces?</p>
-          <p>The CAMP project addresses this challenge by studying how pastoral activities modify soils and sediments.</p>
+          <div class="challenge-copy">
+            <h2 id="challengeHeading">The challenge</h2>
+            <p>How can archaeologists identify and interpret settlements that often leave only ephemeral traces?</p>
+            <p>CAMP (Reconstructing the Archaeology of Mobile Pastoralism) addresses this challenge by developing geo-ethnoarchaeological methods that combine archaeology, ethnography, geochemistry and geostatistics to investigate pastoral settlement dynamics in drylands.</p>
+          </div>
+          <aside class="home-card fact-card">
+            <p>ERC Consolidator Grant</p>
+            <p>Universitat Pompeu Fabra (Barcelona)</p>
+            <p><strong>Principal Investigator:</strong><br />Stefano Biagetti</p>
+          </aside>
         </section>
 
         <section class="home-section" aria-labelledby="workflowHeading">
           <h2 id="workflowHeading">From living settlements to archaeological interpretation</h2>
           <div class="workflow">
             <article>Contemporary pastoral settlements</article>
-            <article>Soil sampling and pXRF analysis</article>
+            <article>Soil sampling and chemical analysis</article>
             <article>Geostatistical modelling</article>
             <article>Interpretation of archaeological sites</article>
           </div>
@@ -93,21 +100,21 @@
           </div>
         </section>
 
-        <section class="home-section about-camp compact-camp" aria-labelledby="campHeading">
-          <div class="home-card">
-            <h2 id="campHeading">The CAMP Project</h2>
-            <p>CAMP (Reconstructing the Archaeology of Mobile Pastoralism) develops geo-ethnoarchaeological methods that combine archaeology, geochemistry, geography and geostatistics to investigate pastoral settlement dynamics in drylands.</p>
-          </div>
-          <aside class="home-card fact-card">
-            <p>ERC Consolidator Grant</p>
-            <p>Universitat Pompeu Fabra (Barcelona)</p>
-            <p><strong>Principal Investigator:</strong><br />Stefano Biagetti</p>
-          </aside>
+        <section class="home-section" aria-labelledby="methodologyHeading">
+          <h2 id="methodologyHeading">Methodological workflow</h2>
+          <figure class="methodology-card">
+            <img src="assets/figures/methodology.png" alt="Methodological workflow from field observations to chemical maps" />
+          </figure>
         </section>
 
         <section class="home-section" aria-labelledby="useHeading">
           <h2 id="useHeading">Explore the Data</h2>
           <div class="home-card-grid three">
+            <article class="nav-card">
+              <h3>Overview</h3>
+              <p>Examine the spatial distribution of studied settlements within the landscape.</p>
+              <button type="button" data-go-tab="overview">Open Overview</button>
+            </article>
             <article class="nav-card">
               <h3>Explore</h3>
               <p>Inspect individual settlements, activity areas and elemental distributions.</p>
@@ -117,11 +124,6 @@
               <h3>Compare</h3>
               <p>Compare chemical patterns between settlements and activity areas.</p>
               <button type="button" data-go-tab="compare">Open Compare</button>
-            </article>
-            <article class="nav-card">
-              <h3>Overview</h3>
-              <p>Examine the spatial distribution of studied settlements within the landscape.</p>
-              <button type="button" data-go-tab="overview">Open Overview</button>
             </article>
           </div>
         </section>
@@ -185,10 +187,10 @@
             <p id="interpretation">Select an element to compare chemical patterning between the corral and domestic area.</p>
           </section>
 
-          <section aria-labelledby="mapReadingHeading">
-            <h3 id="mapReadingHeading">How to read these maps</h3>
+          <details class="sidebar-note">
+            <summary id="mapReadingHeading">How to read these maps</summary>
             <p>Chemical elements do not directly represent activities. Instead, spatial concentrations and recurring patterns may indicate processes such as livestock management, occupation intensity, waste accumulation, combustion or sedimentary variation. Use the maps to explore patterns, compare areas and formulate interpretations.</p>
-          </section>
+          </details>
         </aside>
 
         <div class="explore-main">
