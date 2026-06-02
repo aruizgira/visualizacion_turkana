@@ -98,9 +98,208 @@ h2, h3 { margin: 0 0 12px; }
 .tab-view[hidden] { display: none; }
 
 .overview-shell,
-.compare-shell {
+.compare-shell,
+.home-shell {
   max-width: 1240px;
   margin: 0 auto;
+}
+
+.home-shell {
+  display: grid;
+  gap: 26px;
+}
+
+.home-hero {
+  padding: clamp(34px, 6vw, 74px);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background:
+    linear-gradient(90deg, rgba(23, 49, 47, .94), rgba(23, 49, 47, .62)),
+    url("assets/E8/area_1_domestic/photos/Kenya_E8_area_1.jpeg") center / cover;
+  color: white;
+  box-shadow: var(--shadow);
+}
+
+.home-hero h2 {
+  max-width: 920px;
+  margin-bottom: 16px;
+  font-size: clamp(2.4rem, 5vw, 5rem);
+  line-height: .98;
+}
+
+.home-hero p {
+  max-width: 760px;
+  margin: 0;
+  font-size: 1.12rem;
+  color: rgba(255, 255, 255, .9);
+}
+
+.home-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 28px;
+}
+
+.home-actions button,
+.nav-card button {
+  width: auto;
+}
+
+.secondary-button {
+  background: rgba(255, 255, 255, .12);
+  border-color: rgba(255, 255, 255, .38);
+}
+
+.secondary-button:hover {
+  background: rgba(255, 255, 255, .22);
+}
+
+.home-section {
+  display: grid;
+  gap: 14px;
+}
+
+.home-card-grid {
+  display: grid;
+  gap: 16px;
+}
+
+.home-card-grid.three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.home-card,
+.question-card,
+.nav-card,
+.interpretive-note,
+.challenge-card {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+}
+
+.home-card,
+.question-card,
+.nav-card {
+  padding: 20px;
+}
+
+.home-card p,
+.question-card p,
+.nav-card p,
+.home-copy,
+.interpretive-note p,
+.challenge-card p {
+  color: var(--muted);
+  line-height: 1.55;
+}
+
+.challenge-card {
+  padding: 24px;
+  border-left: 5px solid var(--accent);
+  background: #f7faf6;
+}
+
+.challenge-card p {
+  max-width: 840px;
+  margin: 0;
+}
+
+.challenge-card p + p {
+  margin-top: 8px;
+}
+
+.card-icon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  margin-bottom: 14px;
+  place-items: center;
+  border-radius: 999px;
+  background: var(--soft);
+  color: var(--accent-dark);
+  font-weight: 850;
+}
+
+.workflow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 28px;
+  counter-reset: workflow;
+}
+
+.workflow article {
+  position: relative;
+  min-height: 92px;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--card);
+  box-shadow: var(--shadow);
+  font-weight: 760;
+}
+
+.workflow article:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: -21px;
+  width: 14px;
+  height: 14px;
+  border-top: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  transform: translateY(-50%) rotate(45deg);
+}
+
+.home-copy {
+  max-width: 860px;
+  margin: 0;
+}
+
+.question-card {
+  min-height: 210px;
+}
+
+.question-card p {
+  margin-bottom: 0;
+}
+
+.about-camp {
+  grid-template-columns: minmax(0, 1fr) 300px;
+}
+
+.compact-camp .home-card {
+  padding: 18px;
+  box-shadow: none;
+}
+
+.fact-card p {
+  margin: 0 0 14px;
+}
+
+.nav-card {
+  display: grid;
+  align-content: space-between;
+  min-height: 230px;
+}
+
+.interpretive-note {
+  padding: 0;
+}
+
+.interpretive-note summary {
+  cursor: pointer;
+  padding: 18px 20px;
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.interpretive-note p {
+  max-width: 920px;
+  margin: 0;
+  padding: 0 20px 20px;
 }
 
 .section-header {
@@ -414,8 +613,18 @@ footer {
 @media (max-width: 1050px) {
   .layout,
   .compare-grid,
-  .site-media {
+  .site-media,
+  .home-card-grid.three,
+  .workflow,
+  .about-camp {
     grid-template-columns: 1fr;
+  }
+
+  .workflow article:not(:last-child)::after {
+    top: auto;
+    right: 50%;
+    bottom: -21px;
+    transform: translateX(50%) rotate(135deg);
   }
 
   .panel {
@@ -440,6 +649,19 @@ footer {
 
   .tab-view {
     padding: 14px;
+  }
+
+  .home-shell {
+    gap: 18px;
+  }
+
+  .home-hero {
+    padding: 32px 22px;
+  }
+
+  .home-actions button,
+  .nav-card button {
+    width: 100%;
   }
 
   .site-info,

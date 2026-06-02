@@ -18,13 +18,117 @@
   </header>
 
   <nav class="tabs" aria-label="Main views">
-    <button type="button" class="tab-button active" data-tab="overview">Overview</button>
+    <button type="button" class="tab-button active" data-tab="home">Home</button>
+    <button type="button" class="tab-button" data-tab="overview">Overview</button>
     <button type="button" class="tab-button" data-tab="explore">Explore</button>
     <button type="button" class="tab-button" data-tab="compare">Compare</button>
   </nav>
 
   <main>
-    <section id="overviewView" class="tab-view active" aria-labelledby="overviewHeading">
+    <section id="homeView" class="tab-view active" aria-labelledby="homeHeading">
+      <div class="home-shell">
+        <section class="home-hero">
+          <p class="eyebrow">Geo-ethnoarchaeology and soil chemistry</p>
+          <h2 id="homeHeading">Geo-ethnoarchaeology for elusive pastoral landscapes</h2>
+          <p>Pastoral settlements often leave subtle and short-lived traces. This visualization explores how soil chemistry can help reveal activity areas in contemporary Turkana pastoral settlements and support archaeological interpretation.</p>
+          <div class="home-actions">
+            <button type="button" data-go-tab="explore">Explore the data</button>
+            <button type="button" class="secondary-button" data-go-tab="overview">View the study area</button>
+          </div>
+        </section>
+
+        <section class="home-section" aria-labelledby="bigIdeaHeading">
+          <h2 id="bigIdeaHeading">Why pastoralism matters</h2>
+          <div class="home-card-grid three">
+            <article class="home-card">
+              <span class="card-icon">1</span>
+              <h3>Living with uncertainty</h3>
+              <p>Pastoralism is a successful strategy for inhabiting drylands, where people adapt to variable resources through mobility and flexible herd management.</p>
+            </article>
+            <article class="home-card">
+              <span class="card-icon">2</span>
+              <h3>A resilient way of life</h3>
+              <p>Pastoral societies have sustained livelihoods for millennia across arid regions, offering important insights into human adaptation under environmental stress.</p>
+            </article>
+            <article class="home-card">
+              <span class="card-icon">3</span>
+              <h3>An elusive archaeological record</h3>
+              <p>Pastoral settlements are often temporary and leave subtle material traces, making their long-term history difficult to reconstruct archaeologically.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="home-section challenge-card" aria-labelledby="challengeHeading">
+          <h2 id="challengeHeading">The challenge</h2>
+          <p>How can archaeologists identify and interpret settlements that often leave only ephemeral traces?</p>
+          <p>The CAMP project addresses this challenge by studying how pastoral activities modify soils and sediments.</p>
+        </section>
+
+        <section class="home-section" aria-labelledby="workflowHeading">
+          <h2 id="workflowHeading">From living settlements to archaeological interpretation</h2>
+          <div class="workflow">
+            <article>Contemporary pastoral settlements</article>
+            <article>Soil sampling and pXRF analysis</article>
+            <article>Geostatistical modelling</article>
+            <article>Interpretation of archaeological sites</article>
+          </div>
+          <p class="home-copy">The CAMP project investigates how pastoral activities modify soils and sediments. By studying contemporary settlements, chemical signatures can be identified and used as reference models for interpreting archaeological pastoral sites.</p>
+        </section>
+
+        <section class="home-section" aria-labelledby="questionsHeading">
+          <h2 id="questionsHeading">Research Questions</h2>
+          <div class="home-card-grid three">
+            <article class="question-card">
+              <h3>Can pastoral activities be detected through soil chemistry?</h3>
+              <p>Explore whether elemental patterns correspond to settlement practices.</p>
+            </article>
+            <article class="question-card">
+              <h3>Do different activity areas produce distinct chemical signatures?</h3>
+              <p>Compare corrals, domestic spaces and other activity zones.</p>
+            </article>
+            <article class="question-card">
+              <h3>Can contemporary pastoral settlements help interpret archaeological sites?</h3>
+              <p>Use present-day reference patterns to support archaeological reasoning.</p>
+            </article>
+          </div>
+        </section>
+
+        <section class="home-section about-camp compact-camp" aria-labelledby="campHeading">
+          <div class="home-card">
+            <h2 id="campHeading">The CAMP Project</h2>
+            <p>CAMP (Reconstructing the Archaeology of Mobile Pastoralism) develops geo-ethnoarchaeological methods that combine archaeology, geochemistry, geography and geostatistics to investigate pastoral settlement dynamics in drylands.</p>
+          </div>
+          <aside class="home-card fact-card">
+            <p>ERC Consolidator Grant</p>
+            <p>Universitat Pompeu Fabra (Barcelona)</p>
+            <p><strong>Principal Investigator:</strong><br />Stefano Biagetti</p>
+          </aside>
+        </section>
+
+        <section class="home-section" aria-labelledby="useHeading">
+          <h2 id="useHeading">Explore the Data</h2>
+          <div class="home-card-grid three">
+            <article class="nav-card">
+              <h3>Explore</h3>
+              <p>Inspect individual settlements, activity areas and elemental distributions.</p>
+              <button type="button" data-go-tab="explore">Open Explore</button>
+            </article>
+            <article class="nav-card">
+              <h3>Compare</h3>
+              <p>Compare chemical patterns between settlements and activity areas.</p>
+              <button type="button" data-go-tab="compare">Open Compare</button>
+            </article>
+            <article class="nav-card">
+              <h3>Overview</h3>
+              <p>Examine the spatial distribution of studied settlements within the landscape.</p>
+              <button type="button" data-go-tab="overview">Open Overview</button>
+            </article>
+          </div>
+        </section>
+      </div>
+    </section>
+
+    <section id="overviewView" class="tab-view" aria-labelledby="overviewHeading" hidden>
       <div class="overview-shell">
         <div class="section-header">
           <div>
@@ -79,6 +183,11 @@
           <section aria-labelledby="interpretiveFocusHeading">
             <h3 id="interpretiveFocusHeading">Interpretive focus</h3>
             <p id="interpretation">Select an element to compare chemical patterning between the corral and domestic area.</p>
+          </section>
+
+          <section aria-labelledby="mapReadingHeading">
+            <h3 id="mapReadingHeading">How to read these maps</h3>
+            <p>Chemical elements do not directly represent activities. Instead, spatial concentrations and recurring patterns may indicate processes such as livestock management, occupation intensity, waste accumulation, combustion or sedimentary variation. Use the maps to explore patterns, compare areas and formulate interpretations.</p>
           </section>
         </aside>
 

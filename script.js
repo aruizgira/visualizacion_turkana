@@ -8,7 +8,7 @@ const state = {
   area: null,
   element: null,
   lastBBox: null,
-  activeTab: 'overview',
+  activeTab: 'home',
   locations: new Map(),
   overviewMap: null,
   overviewMarkers: [],
@@ -17,7 +17,9 @@ const state = {
 
 const el = {
   tabButtons: document.querySelectorAll('.tab-button'),
+  tabLinks: document.querySelectorAll('[data-go-tab]'),
   tabViews: {
+    home: document.getElementById('homeView'),
     overview: document.getElementById('overviewView'),
     explore: document.getElementById('exploreView'),
     compare: document.getElementById('compareView'),
@@ -436,6 +438,9 @@ function initTabs() {
   el.tabButtons.forEach(button => {
     button.addEventListener('click', () => switchTab(button.dataset.tab));
   });
+  el.tabLinks.forEach(button => {
+    button.addEventListener('click', () => switchTab(button.dataset.goTab));
+  });
 }
 
 function switchTab(tabName) {
@@ -450,13 +455,26 @@ function switchTab(tabName) {
   });
 
   window.setTimeout(() => {
-    if (tabName === 'overview' && state.overviewMap) state.overviewMap.invalidateSize();
+    if (tabName === 'overview' && state.overviewMap) {
+      state.overviewMap.invalidateSize();
+      fitOverviewToMarkers();
+    }
     if (tabName === 'explore') {
       if (state.miniMap) state.miniMap.invalidateSize();
       renderExplore();
     }
     if (tabName === 'compare') renderCompare();
   }, 0);
+}
+
+function fitOverviewToMarkers() {
+  if (!state.overviewMap || !state.overviewMarkers.length) return;
+  const group = L.featureGroup(state.overviewMarkers);
+  const bounds = group.getBounds().pad(0.75);
+  const center = bounds.getCenter();
+  const southShift = (bounds.getNorth() - bounds.getSouth()) * -0.3;
+  state.overviewMap.fitBounds(bounds, { padding: [28, 28] });
+  state.overviewMap.panTo([center.lat - southShift, center.lng], { animate: false });
 }
 
 async function deriveSiteLocations() {
@@ -533,12 +551,7 @@ function initOverviewMap() {
   });
 
   if (state.overviewMarkers.length) {
-    const group = L.featureGroup(state.overviewMarkers);
-    const bounds = group.getBounds().pad(0.75);
-    const center = bounds.getCenter();
-    const southShift = (bounds.getNorth() - bounds.getSouth()) * -0.2;
-    state.overviewMap.fitBounds(bounds, { padding: [28, 28] });
-    state.overviewMap.panTo([center.lat - southShift, center.lng], { animate: false });
+    fitOverviewToMarkers();
     el.overviewStatus.hidden = true;
   } else {
     console.warn('No site locations could be derived from the available GeoTIFFs.');
