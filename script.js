@@ -14,6 +14,7 @@ const state = {
   overviewMarkers: [],
   overviewMapAnimating: false,
   miniMap: null,
+  compareRenderToken: 0,
 };
 
 const el = {
@@ -234,13 +235,7 @@ function makeProjector(bbox, canvas) {
   return ([x, y]) => [offsetX + (x - minX) * scale, offsetY + (maxY - y) * scale];
 }
 
-function drawRaster(ctx, raster, width, height, bbox, viewBBox, legendMin, legendMax) {
-  const tmp = document.createElement('canvas');
-  tmp.width = width;
-  tmp.height = height;
-  const tctx = tmp.getContext('2d');
-  const imageData = tctx.createImageData(width, height);
-
+function getRasterValueRange(raster) {
   let min = Infinity;
   let max = -Infinity;
   for (const v of raster) {
@@ -253,6 +248,16 @@ function drawRaster(ctx, raster, width, height, bbox, viewBBox, legendMin, legen
     min = 0;
     max = 1;
   }
+  return { min, max };
+}
+
+function drawRaster(ctx, raster, width, height, bbox, viewBBox, legendMin, legendMax, colorRange) {
+  const tmp = document.createElement('canvas');
+  tmp.width = width;
+  tmp.height = height;
+  const tctx = tmp.getContext('2d');
+  const imageData = tctx.createImageData(width, height);
+  const { min, max } = colorRange || getRasterValueRange(raster);
 
   for (let i = 0; i < raster.length; i++) {
     const v = raster[i];
@@ -393,7 +398,7 @@ async function renderRasterPanel(panel) {
     if (panel.renderToken !== token) return;
 
     const viewBBox = padBBox(unionBBox(bbox, structuresBBox));
-    drawRaster(ctx, data, width, height, bbox, viewBBox, panel.legendMin, panel.legendMax);
+    drawRaster(ctx, data, width, height, bbox, viewBBox, panel.legendMin, panel.legendMax, panel.colorRange);
     if (panel.showStructures() && structures) drawGeoJSON(ctx, structures, viewBBox);
     drawNorthArrowAndScale(ctx, viewBBox);
 
@@ -784,20 +789,20 @@ function bindComparePanel(panel) {
   panel.siteSelect.addEventListener('change', () => {
     panel.site = state.sites.find(site => site.id === panel.siteSelect.value);
     updateCompareArea(panel);
-    renderComparePanel(panel);
+    renderCompare();
   });
 
   panel.areaSelect.addEventListener('change', () => {
     updateCompareArea(panel, panel.areaSelect.value, panel.element);
-    renderComparePanel(panel);
+    renderCompare();
   });
 
   panel.elementSelect.addEventListener('change', () => {
     panel.element = panel.elementSelect.value;
-    renderComparePanel(panel);
+    renderCompare();
   });
 
-  panel.structuresToggle.addEventListener('change', () => renderComparePanel(panel));
+  panel.structuresToggle.addEventListener('change', renderCompare);
 }
 
 function renderComparePanel(panel) {
@@ -805,9 +810,54 @@ function renderComparePanel(panel) {
   return renderRasterPanel(panel);
 }
 
-function renderCompare() {
-  renderComparePanel(comparePanels.a);
-  renderComparePanel(comparePanels.b);
+async function getPanelRasterValueRange(panel) {
+  const rasterPath = panel.area?.rasters?.[panel.element];
+  if (!rasterPath) throw new Error(`No raster configured for ${panel.element}`);
+  const tiff = await loadGeoTiff(rasterPath);
+  const image = await tiff.getImage();
+  const data = await image.readRasters({ interleave: true });
+  return getRasterValueRange(data);
+}
+
+async function renderCompare() {
+  const token = state.compareRenderToken + 1;
+  state.compareRenderToken = token;
+
+  if (comparePanels.a.element !== comparePanels.b.element) {
+    comparePanels.a.colorRange = null;
+    comparePanels.b.colorRange = null;
+    await Promise.all([
+      renderComparePanel(comparePanels.a),
+      renderComparePanel(comparePanels.b),
+    ]);
+    return;
+  }
+
+  try {
+    const ranges = await Promise.all([
+      getPanelRasterValueRange(comparePanels.a),
+      getPanelRasterValueRange(comparePanels.b),
+    ]);
+    if (state.compareRenderToken !== token) return;
+
+    const sharedRange = {
+      min: Math.min(...ranges.map(range => range.min)),
+      max: Math.max(...ranges.map(range => range.max)),
+    };
+    comparePanels.a.colorRange = sharedRange;
+    comparePanels.b.colorRange = sharedRange;
+  } catch (err) {
+    if (state.compareRenderToken !== token) return;
+    console.error('Could not calculate a shared Compare concentration scale:', err);
+    comparePanels.a.colorRange = null;
+    comparePanels.b.colorRange = null;
+  }
+
+  if (state.compareRenderToken !== token) return;
+  await Promise.all([
+    renderComparePanel(comparePanels.a),
+    renderComparePanel(comparePanels.b),
+  ]);
 }
 
 function initCompare() {
