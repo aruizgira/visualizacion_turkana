@@ -12,6 +12,7 @@ const state = {
   locations: new Map(),
   overviewMap: null,
   overviewMarkers: [],
+  overviewMapAnimating: false,
   miniMap: null,
 };
 
@@ -42,6 +43,7 @@ const el = {
   siteInfoMeta: document.getElementById('siteInfoMeta'),
   siteLocationText: document.getElementById('siteLocationText'),
   miniSiteMap: document.getElementById('miniSiteMap'),
+  landscapeZoomButton: document.getElementById('landscapeZoomButton'),
   sitePhoto: document.getElementById('sitePhoto'),
   photoModal: document.getElementById('photoModal'),
   photoModalImage: document.getElementById('photoModalImage'),
@@ -471,10 +473,10 @@ function fitOverviewToMarkers() {
   if (!state.overviewMap || !state.overviewMarkers.length) return;
   const group = L.featureGroup(state.overviewMarkers);
   const bounds = group.getBounds().pad(0.75);
-  const center = bounds.getCenter();
-  const southShift = (bounds.getNorth() - bounds.getSouth()) * -0.3;
-  state.overviewMap.fitBounds(bounds, { padding: [28, 28] });
-  state.overviewMap.panTo([center.lat - southShift, center.lng], { animate: false });
+  const latitudeSpan = bounds.getNorth() - bounds.getSouth();
+  const defaultCenter = [bounds.getCenter().lat + latitudeSpan * 0.2, bounds.getCenter().lng];
+  state.overviewMap.fitBounds(bounds, { padding: [28, 28], animate: false });
+  state.overviewMap.setView(defaultCenter, state.overviewMap.getZoom(), { animate: false });
 }
 
 async function deriveSiteLocations() {
@@ -525,6 +527,7 @@ function initOverviewMap() {
       scrollWheelZoom: true,
       doubleClickZoom: true,
       touchZoom: true,
+      zoomAnimationThreshold: 20,
     });
     createImageryLayer().addTo(state.overviewMap);
   }
@@ -580,6 +583,73 @@ function updateMiniMap() {
 
   state.miniMap.setView([location.lat, location.lon], 18);
   window.setTimeout(() => state.miniMap.invalidateSize(), 0);
+}
+
+function wait(ms) {
+  return new Promise(resolve => window.setTimeout(resolve, ms));
+}
+
+function flyMapTo(map, center, zoom, duration) {
+  return new Promise(resolve => {
+    if (!map) {
+      resolve();
+      return;
+    }
+
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      map.off('moveend', finish);
+      resolve();
+    };
+
+    map.once('moveend', finish);
+    map.flyTo(center, zoom, {
+      animate: true,
+      duration,
+      easeLinearity: .2,
+    });
+    window.setTimeout(finish, (duration + .9) * 1000);
+  });
+}
+
+async function runLandscapeZoom() {
+  if (!state.overviewMap || state.overviewMapAnimating) return;
+
+  const originalCenter = state.overviewMap.getCenter();
+  const originalZoom = state.overviewMap.getZoom();
+  const e4Location = state.locations.get('E4');
+  const landscapeCenter = e4Location
+    ? [e4Location.lat, e4Location.lon]
+    : [originalCenter.lat, originalCenter.lng];
+  state.overviewMapAnimating = true;
+  if (el.landscapeZoomButton) el.landscapeZoomButton.disabled = true;
+
+  try {
+    const closeupZoom = Math.min(originalZoom + 4, 20);
+    const regionalZoom = Math.max(originalZoom - 8, 8);
+    const continentalZoom = Math.max(originalZoom - 11, 5);
+
+    await flyMapTo(state.overviewMap, landscapeCenter, closeupZoom, 2.2);
+    await wait(1500);
+    for (let zoom = closeupZoom - 4; zoom > regionalZoom; zoom -= 4) {
+      await flyMapTo(state.overviewMap, landscapeCenter, zoom, 1.4);
+    }
+    await flyMapTo(state.overviewMap, landscapeCenter, regionalZoom, 1.8);
+    await wait(450);
+    await flyMapTo(state.overviewMap, landscapeCenter, continentalZoom, 2.4);
+    await wait(700);
+    await flyMapTo(state.overviewMap, originalCenter, originalZoom, 2.6);
+  } finally {
+    state.overviewMapAnimating = false;
+    if (el.landscapeZoomButton) el.landscapeZoomButton.disabled = false;
+  }
+}
+
+function initLandscapeZoomButton() {
+  if (!el.landscapeZoomButton) return;
+  el.landscapeZoomButton.addEventListener('click', runLandscapeZoom);
 }
 
 function updateExploreInfo() {
@@ -748,6 +818,7 @@ function initCompare() {
 async function init() {
   defineProjection();
   initTabs();
+  initLandscapeZoomButton();
 
   try {
     const config = await fetchJson(`data/sites.json?v=${Date.now()}`);

@@ -138,7 +138,10 @@
             <p>Satellite overview of studied sites.</p>
           </div>
         </div>
-        <div id="overviewMap" class="overview-map" aria-label="Satellite map of site locations"></div>
+        <div class="overview-map-wrap">
+          <div id="overviewMap" class="overview-map" aria-label="Satellite map of site locations"></div>
+          <button type="button" id="landscapeZoomButton" class="landscape-zoom-button">Landscape zoom</button>
+        </div>
         <p id="overviewStatus" class="status-note" hidden></p>
       </div>
     </section>
@@ -205,7 +208,9 @@
             </div>
             <div class="site-media">
               <img id="sitePhoto" alt="Field photograph for selected area" />
-              <div id="miniSiteMap" class="mini-map" aria-label="Satellite location map for selected site"></div>
+              <div class="mini-map-wrap">
+                <div id="miniSiteMap" class="mini-map" aria-label="Satellite location map for selected site"></div>
+              </div>
             </div>
           </section>
 
