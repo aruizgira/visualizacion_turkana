@@ -95,17 +95,23 @@ const comparePanels = {
 };
 
 const elementNotes = {
-  P: 'Phosphorus is often useful for detecting organic residues, dung accumulation, and intensive activity areas.',
-  Ca: 'Calcium can reflect ash, bone, dung, or other activity-related enrichment depending on the context.',
-  Fe: 'Iron can help highlight combustion, sediment differences, and activity-related soil modification.',
-  Mn: 'Manganese may capture subtle soil and activity contrasts, especially when read together with other elements.',
-  Sr: 'Strontium can be useful when comparing animal-related and sedimentary signals.',
-  Al: 'Aluminium is useful as a background or sediment control element.',
-  Si: 'Silicon can help evaluate sediment background and mineralogical contrasts.',
-  K: 'Potassium can help compare ash, dung, and sediment-related enrichment patterns.',
-  Cl: 'Chlorine may highlight salts or local activity signatures when interpreted with other elements.',
-  S: 'Sulfur can be useful for activity-related contrasts and should be read alongside other elements.',
-  Ni: 'Nickel can support broader sediment and geochemical comparisons.'
+  Al: 'Aluminium is typically dominated by the local geology but can also be related to building materials, particularly packed earth floors. It often covaries with Si, Fe, and Ti.',
+  Ba: 'Barium is often linked to organic waste disposal and habitation residues. Its sources may include bone, teeth, ash, legumes, and marine sources. Ba can also be associated with the local geology. Ba follows the same chemical pathways as Ca and Sr and is often related to them, although to a lesser degree than Sr and Ca tend to be correlated.',
+  Ca: 'Calcium is often linked with local geology, and its anthropogenic inputs include burning activities, charcoal, ash, and building materials such as lime mortars. Ca can also be impacted by marine products such as shells, coral, and fish processing. Ca and Sr follow the same chemical pathways and are often closely associated, especially in relation to burning activities.',
+  Cl: 'Chlorine is generally considered higher in archaeological layers than in natural sediments. It is also related to conservation and the process of desalination.',
+  Fe: 'Iron is typically dominated by the local geology but can also be related to building materials, particularly packed earth floors. It often covaries with Si, Ti, and Al and is correlated negatively or not at all with more anthropogenic elements.',
+  K: 'Potassium is often related to the mineral fraction of the local geology. However, it can also be related to anthropogenic activities such as burning, ash, and food production or processing. Its key source inputs include organic ash, plant food scraps, and fodder.',
+  Mg: 'Magnesium is often related to wood ash, plant or animal waste, shell remains, other marine inputs, and several types of fertilizer. Mg is prone to leaching and is one of the lightest elements detectable by pXRF, making it somewhat less reliable because it is near the edge of detection limits.',
+  Mn: 'Manganese is often seen as a universal indicator of human occupation. It is affiliated with organic material such as manure and ash. Manganese concentrations can help indicate functional areas in a space.',
+  Ni: 'Nickel is often associated with local geology, but it can also be anthropogenically related to specialized craft production, including some ceramics, pigments, metalworking, and tanning. Ni concentrations may also be related to shells or dung.',
+  P: 'Phosphorus is one of the most widely used indicators of past human and animal activity. It is commonly associated with organic waste, dung accumulation, food preparation, occupation intensity, and areas of prolonged use. Phosphorus often shows positive relationships with elements such as Sr, and Ca.',
+  S: 'Sulfur is typically associated with organic matter and can be concentrated in areas related to livestock stabling, manuring, and waste disposal. It is often grouped with other elements such as P, K, Zn, and Cu.',
+  Si: 'Silicon is typically dominated by the local geology but can also be related to building materials, particularly packed earth floors. It often covaries with Ti, Fe, and Al. However, Si concentrations have also been theorized to be linked to plant material or processing through the deposition of phytoliths, which are silicified plant cells. Si is also often noted to be related to post-depositional aeolian processes.',
+  Sr: 'Strontium is often seen as a strong indicator of human activity. It has often been related to human excreta or the presence of bone or shells. It tends to show positive correlation with Ca because they follow the same chemical pathways. It also tends to have a strong positive correlation with P.',
+  Ti: 'Titanium is typically dominated by the local geology but can also be related to building materials, particularly packed earth floors. It often covaries with Si, Fe, and Al.',
+  Y: 'Yttrium is a rare earth element that can be generally more concentrated in sites than in background or control samples. In one case, Holmqvist and Ilves (2022) observed concentrations near walls and post holes, hypothesized to relate to specific accumulations, possibly from sweeping or rubbish and dust. It has also been linked to human debris, seaweed, shells, and animal manures.',
+  Zn: 'Zinc has been linked to general past human occupation and sometimes hearth ash.',
+  Zr: 'Zirconium is typically related to the geological background. There is no strong agreement on its usefulness at sites, as some studies have found no real link to human occupations while others have found a limited connection, specifically relating to ceramic decay or clays introduced from mud brick or tracking in.'
 };
 
 function defineProjection() {
@@ -706,7 +712,7 @@ function populateAreaOptions(select, site, selectedId) {
 
 function populateElementOptions(select, area, selectedElement) {
   select.innerHTML = '';
-  const elements = Object.keys(area.rasters);
+  const elements = Object.keys(area.rasters).sort((a, b) => a.localeCompare(b));
   elements.forEach(element => select.add(new Option(element, element)));
   select.value = selectedElement && elements.includes(selectedElement) ? selectedElement : elements[0];
 }
