@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- Main title area shown on every tab. -->
   <header class="hero">
     <div class="hero-content">
       <p class="eyebrow">CAMP - Loreamatet, Turkana</p>
@@ -17,6 +18,7 @@
     </div>
   </header>
 
+  <!-- These buttons switch between the four main views. -->
   <nav class="tabs" aria-label="Main views">
     <button type="button" class="tab-button active" data-tab="home">Home</button>
     <button type="button" class="tab-button" data-tab="overview">Overview</button>
@@ -25,6 +27,7 @@
   </nav>
 
   <main>
+    <!-- Home introduces the project and sends users to the data views. -->
     <section id="homeView" class="tab-view active" aria-labelledby="homeHeading">
       <div class="home-shell">
         <section class="home-hero">
@@ -130,6 +133,7 @@
       </div>
     </section>
 
+    <!-- Overview shows the study area and site locations on a satellite map. -->
     <section id="overviewView" class="tab-view" aria-labelledby="overviewHeading" hidden>
       <div class="overview-shell">
         <div class="section-header">
@@ -147,6 +151,7 @@
       </div>
     </section>
 
+    <!-- Explore lets the user inspect one site, area and chemical element. -->
     <section id="exploreView" class="tab-view" aria-labelledby="exploreHeading" hidden>
       <div class="layout">
         <aside class="panel" aria-label="Visualization controls">
@@ -233,6 +238,7 @@
       </div>
     </section>
 
+    <!-- Compare renders two maps side by side with independent controls. -->
     <section id="compareView" class="tab-view" aria-labelledby="compareHeading" hidden>
       <div class="compare-shell">
         <div class="section-header">
@@ -326,11 +332,13 @@
     </section>
   </main>
 
+  <!-- Simple image modal for enlarging the selected field photo. -->
   <div id="photoModal" class="photo-modal" hidden>
     <button type="button" id="photoModalClose" class="photo-modal-close" aria-label="Close enlarged photo">Close</button>
     <img id="photoModalImage" alt="" />
   </div>
 
+  <!-- External libraries are loaded from CDNs so GitHub Pages can serve the app as static files. -->
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/geotiff@2.1.3/dist-browser/geotiff.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/proj4@2.12.1/dist/proj4.js" defer></script>

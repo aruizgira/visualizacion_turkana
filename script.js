@@ -2,6 +2,7 @@ const EPSG_32637 = '+proj=utm +zone=37 +datum=WGS84 +units=m +no_defs +type=crs'
 const ESRI_IMAGERY =
   'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 
+// A small shared state object keeps track of the current selections and maps.
 const state = {
   sites: [],
   site: null,
@@ -17,6 +18,7 @@ const state = {
   compareRenderToken: 0,
 };
 
+// DOM elements used by the interface. Keeping them here avoids repeated queries.
 const el = {
   tabButtons: document.querySelectorAll('.tab-button'),
   tabLinks: document.querySelectorAll('[data-go-tab]'),
@@ -54,8 +56,10 @@ const el = {
   resetButton: document.getElementById('resetButton'),
 };
 
+// GeoTIFF files are reused in several views, so a small cache prevents repeated downloads.
 const tiffCache = new Map();
 
+// The two Compare panels have the same structure but separate controls and canvases.
 const comparePanels = {
   a: {
     key: 'a',
@@ -130,6 +134,7 @@ function setLoading(target, show, message = 'Loading raster...') {
   target.classList.toggle('hidden', !show);
 }
 
+// Fetch JSON data from local project files.
 async function fetchJson(url) {
   const response = await fetch(url, { cache: 'no-store' });
   if (!response.ok) throw new Error(`Could not load ${url}: ${response.status}`);
@@ -168,6 +173,7 @@ function formatNumber(v) {
 }
 
 function colorRamp(t) {
+  // Same colour ramp as the visible legend: dark purple for low values, yellow for high.
   const stops = [
     [0.00, [68, 1, 84]],
     [0.25, [59, 82, 139]],
@@ -201,6 +207,7 @@ function getGeometryBBox(geojson) {
     coords.forEach(visit);
   }
 
+  // GeoJSON structure files store lines and polygons as FeatureCollections.
   if (!geojson || !Array.isArray(geojson.features)) return null;
   geojson.features.forEach(feature => {
     if (feature.geometry) visit(feature.geometry.coordinates);
@@ -259,6 +266,7 @@ function drawRaster(ctx, raster, width, height, bbox, viewBBox, legendMin, legen
   const imageData = tctx.createImageData(width, height);
   const { min, max } = colorRange || getRasterValueRange(raster);
 
+  // Convert each GeoTIFF cell value into a coloured canvas pixel.
   for (let i = 0; i < raster.length; i++) {
     const v = raster[i];
     const offset = i * 4;
@@ -280,11 +288,13 @@ function drawRaster(ctx, raster, width, height, bbox, viewBBox, legendMin, legen
   ctx.imageSmoothingEnabled = false;
   ctx.drawImage(tmp, x0, y0, x1 - x0, y1 - y0);
 
+  // Legend labels use the same min/max as the colour scale.
   if (legendMin) legendMin.textContent = formatNumber(min);
   if (legendMax) legendMax.textContent = formatNumber(max);
 }
 
 function drawGeoJSON(ctx, geojson, viewBBox) {
+  // Draw settlement structures over the raster using the same coordinate projector.
   const project = makeProjector(viewBBox, ctx.canvas);
   ctx.save();
   ctx.strokeStyle = '#1a1a1a';
@@ -328,6 +338,7 @@ function drawGeoJSON(ctx, geojson, viewBBox) {
 }
 
 function drawNorthArrowAndScale(ctx, viewBBox) {
+  // Small map-reading aids drawn directly on the canvas.
   ctx.save();
   ctx.fillStyle = '#1f2722';
   ctx.strokeStyle = '#1f2722';
@@ -438,6 +449,7 @@ function makeExplorePanel() {
 }
 
 async function renderExplore() {
+  // Explore view: render the selected site, area and element.
   if (!state.site || !state.area || !state.element) return;
   updateExploreInfo();
   const panel = makeExplorePanel();
@@ -448,6 +460,7 @@ async function renderExplore() {
 }
 
 function initTabs() {
+  // Tab navigation is plain button clicks: hide the old section and show the new one.
   el.tabButtons.forEach(button => {
     button.addEventListener('click', () => switchTab(button.dataset.tab));
   });
@@ -519,6 +532,7 @@ async function deriveSiteLocations() {
 }
 
 function createImageryLayer() {
+  // Leaflet satellite layer used in both the Overview map and the mini map.
   return L.tileLayer(ESRI_IMAGERY, {
     maxNativeZoom: 19,
     maxZoom: 21,
@@ -664,6 +678,7 @@ function initLandscapeZoomButton() {
 }
 
 function updateExploreInfo() {
+  // Update the photo, mini map and coordinate text for the selected context.
   if (!state.site || !state.area) return;
   el.photoCard.hidden = !el.photoToggle.checked;
   el.siteInfoHeading.textContent = `${state.site.name} - ${state.area.label}`;
@@ -704,6 +719,7 @@ function closePhotoModal() {
 }
 
 function populateSiteOptions(select, selectedId) {
+  // Fill a select with site names from sites.json.
   select.innerHTML = '';
   state.sites.forEach(site => select.add(new Option(site.name, site.id)));
   if (selectedId) select.value = selectedId;
@@ -820,6 +836,7 @@ async function getPanelRasterValueRange(panel) {
 }
 
 async function renderCompare() {
+  // Compare view: if both panels use the same element, share one colour scale.
   const token = state.compareRenderToken + 1;
   state.compareRenderToken = token;
 
@@ -872,6 +889,7 @@ function initCompare() {
 }
 
 async function init() {
+  // App start-up: load data, prepare controls, then render the first views.
   defineProjection();
   initTabs();
   initLandscapeZoomButton();
